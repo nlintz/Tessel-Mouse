@@ -1,0 +1,11 @@
+{
+  "name": "TesselMouseOSX",
+  "version": "0.0.0",
+  "description": "Control Your Mouse Using the Tessel!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nathan Lintz",
+  "license": "ISC"
+}

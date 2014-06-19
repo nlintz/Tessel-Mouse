@@ -1,21 +1,12 @@
-var $ = require('NodObjC')
-$.framework('Foundation')
-$.framework('CoreGraphics')
-
-var pool = $.NSAutoreleasePool('alloc')('init');
+var mouse = require('./mouselib');
 
 
-pool('drain');
+function moveMouseDiagonalTest () {
+  var location = mouse.location()
+  var i = 0;
 
-function moveMouseToPosition(X, Y)
-{
-  var mouse = $.CGEventCreateMouseEvent(null, $.kCGEventMouseMoved, $.CGPointMake( X, Y), 0);
-  $.CGEventPost($.kCGHIDEventTap, mouse);
-}
-
-function getMouseLocation() 
-{
-  var mouseEvent = $.CGEventCreate(null);
-  var point = $.CGEventGetLocation(mouseEvent);
-  return point;
+  setInterval(function() {
+    mouse.move((location.x + i), (location.y + i));
+    i += 1;
+  }, 100);
 }
