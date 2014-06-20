@@ -1,12 +1,4 @@
+var tessel = require('tessel');
+var accel = require('accel-mma84').connect(tessel.port['A']);
 var mouse = require('./mouselib');
-
-
-function moveMouseDiagonalTest () {
-  var location = mouse.location()
-  var i = 0;
-
-  setInterval(function() {
-    mouse.move((location.x + i), (location.y + i));
-    i += 1;
-  }, 100);
-}
+var path = require('path')

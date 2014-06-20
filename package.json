@@ -9,6 +9,7 @@
   "author": "Nathan Lintz",
   "license": "ISC",
   "dependencies": {
-    "NodObjC": "0.0.15"
+    "NodObjC": "0.0.15",
+    "tessel": "^0.3.5"
   }
 }
