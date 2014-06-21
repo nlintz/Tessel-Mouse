@@ -10,18 +10,14 @@ var tessel = require('tessel');
 var accel = require('accel-mma84').use(tessel.port['A']); // Replace '../' with 'accel-mma84' in your own code
 process.stdout.write('process started')
 console.log('process started')
-var click = false;
+
 // Initialize the accelerometer.
 accel.on('ready', function () {
-    // Stream accelerometer data
-    // accel.on('data', function (xyz) {
-    //     sendMessage(xyz);
-    //   }
     accel.enableDataInterrupts(false, function () {
       accel.setOutputRate(200, function rateSet() {
         accel.on('data', function (xyz) {
-          if (!click)
-            sendMessage(xyz);
+          // sendMessage(xyz);
+          process.stdout.write(xyz);
         });
       });
 
@@ -33,12 +29,13 @@ accel.on('error', function(err){
 });
 
 tessel.button.on('press', function(time) {
-  sendMessage('press');
-  console.log('hi')
+  // sendMessage('press');
+  process.stdout.write('press');
 });
 
 tessel.button.on('release', function(time) {
-  sendMessage('release');
+  // sendMessage('release');
+  process.stdout.write('release');
 });
 
 function sendMessage(message) {
