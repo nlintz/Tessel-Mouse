@@ -7,7 +7,7 @@ accel.on('ready', function () {
     accel.enableDataInterrupts(false, function () {
       accel.setOutputRate(200, function rateSet() {
         accel.on('data', function (xyz) {
-          console.log(xyz);
+          sendMessage(DataTypes.accelerometer, {data: xyz})
         });
       });
 
@@ -19,16 +19,17 @@ accel.on('error', function(err){
 });
 
 tessel.button.on('press', function(time) {
-  console.log('press');
+  sendMessage(DataTypes.press);
 });
 
 tessel.button.on('release', function(time) {
-    console.log('release');
+    sendMessage(DataTypes.release);
 });
 
 // Sends message to stdout
 function sendMessage (type, args) {
   console.log(Message(type, args));
+  // process.stdout.write(Message(type, args))
 }
 
 
@@ -37,5 +38,11 @@ function Message (type, args) {
     args = {};
   };
 
-  return {type: type, args: args}
+  return JSON.stringify({type: type, args: args});
+};
+
+var DataTypes = {
+  accelerometer: 'accelerometer',
+  press: 'press',
+  release: 'release'
 };

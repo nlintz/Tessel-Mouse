@@ -14,7 +14,8 @@ tessel.findTessel(null, function (err, client) {
     });
 
     client.stdout.on('data', function (data) {
-      console.log(data.toString());
+      console.log("DATA")
+      mouseHandler.parseData(data);
     });
 
     // Bundle and upload code.
@@ -51,18 +52,26 @@ MouseHandler.prototype.lowPass = function (newValue, attr) {
   return avg;
 } 
 
-MouseHandler.prototype.getData = function (data, callback) {
-  if (typeof data == "string") {
-    handleClick(data)
-  } else {
-    var x = this.lowPass(parseFloat(data[0].toFixed(2)), 'previousXAcc');
-    var y = this.lowPass(parseFloat(data[1].toFixed(2)), 'previousYAcc');
-    callback ({
-      xAcceleration: x,
-      yAcceleration: y
-    })
-  }
-};
+// MouseHandler.prototype.getData = function (data, callback) {
+//   if (typeof data == "string") {
+//     handleClick(data)
+//   } else {
+//     var x = this.lowPass(parseFloat(data[0].toFixed(2)), 'previousXAcc');
+//     var y = this.lowPass(parseFloat(data[1].toFixed(2)), 'previousYAcc');
+//     callback ({
+//       xAcceleration: x,
+//       yAcceleration: y
+//     })
+//   }
+// };
+
+MouseHandler.prototype.parseData = function (data) {
+  var data = JSON.parse(data);
+  // console.log('data:', data.data, 'datatype:', typeof data.data);
+  // if (data.type == "accelerometer") {
+  //   console.log(data.args)
+  // }
+}
 
 function interpolate (xStart, xEnd, yStart, yEnd, callback) {
   var currentX = xStart;
