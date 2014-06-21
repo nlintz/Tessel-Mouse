@@ -6,5 +6,5 @@ cmd.stdout.on('readable', function () {
 });
 
 cmd.stdout.on('data', function(data) {
-  console.log('mmm data:', data.toString())
+  console.log(data.toString());
 });

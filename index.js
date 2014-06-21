@@ -17,8 +17,12 @@ tessel.findTessel(null, function (err, client) {
       mouseHandler.getData(data, mouseHandler.handleData);
     });
 
+    // client.stdout.on('data', function (data) {
+    //   console.log(data.toString());
+    // });
+
     // Bundle and upload code.
-    client.run('./accelerometer/index.js', ['tessel', ''], {
+    client.run('./data_source/index.js', ['tessel', ''], {
     }, function (err, bundle) {
       console.log('Mouse ... ON!')
       // When this script ends, stop the client.
@@ -84,7 +88,7 @@ function handleClick (direction) {
 }
 
 MouseHandler.prototype.handleData = function (data) {
-  mouse.move(data.xAcceleration.map(-1, 1, 0, 1440+200), data.yAcceleration.map(-1, 1, 0, 900+100));
+  // mouse.move(data.xAcceleration.map(-1, 1, 0, 1440+200), data.yAcceleration.map(-1, 1, 0, 900+100));
   // var x = mouse.location().x;
   // var y = mouse.location().y;
   // interpolate(x, parseFloat(data.xAcceleration).map(-1, 1, 0, 1440), y, parseFloat(data.yAcceleration).map(-1, 1, 0, 900), mouse.move);
