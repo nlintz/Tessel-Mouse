@@ -11,15 +11,11 @@ tessel.findTessel(null, function (err, client) {
     
     client.on('error', function (err) {
       console.error('Error: Cannot connect to Tessel locally.', err);
-    })
-
-    client.on('message', function (data) {
-      mouseHandler.getData(data, mouseHandler.handleData);
     });
 
-    // client.stdout.on('data', function (data) {
-    //   console.log(data.toString());
-    // });
+    client.stdout.on('data', function (data) {
+      console.log(data.toString());
+    });
 
     // Bundle and upload code.
     client.run('./data_source/index.js', ['tessel', ''], {

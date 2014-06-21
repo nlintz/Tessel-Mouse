@@ -25,3 +25,17 @@ tessel.button.on('press', function(time) {
 tessel.button.on('release', function(time) {
     console.log('release');
 });
+
+// Sends message to stdout
+function sendMessage (type, args) {
+  console.log(Message(type, args));
+}
+
+
+function Message (type, args) {
+  if (!args) {
+    args = {};
+  };
+
+  return {type: type, args: args}
+};
