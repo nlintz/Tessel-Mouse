@@ -7,9 +7,7 @@ accel.on('ready', function () {
     accel.enableDataInterrupts(false, function () {
       accel.setOutputRate(200, function rateSet() {
         accel.on('data', function (xyz) {
-          // console.log(xyz);
-          // process.send(xyz);
-          process.send('message', xyz)
+          console.log(xyz);
         });
       });
 
@@ -21,11 +19,9 @@ accel.on('error', function(err){
 });
 
 tessel.button.on('press', function(time) {
-  process.send('message', 'press')
-  // console.log('press');
+  console.log('press');
 });
 
 tessel.button.on('release', function(time) {
-    // console.log('release');
-    process.send('message', 'release');
+    console.log('release');
 });
