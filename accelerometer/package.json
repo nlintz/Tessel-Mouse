@@ -1,15 +1,14 @@
 {
-  "name": "TesselMouseOSX",
+  "name": "accelerometer",
   "version": "0.0.0",
-  "description": "Control Your Mouse Using the Tessel!",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Nathan Lintz",
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "NodObjC": "0.0.15",
     "accel-mma84": "^0.2.3",
     "tessel": "^0.3.5"
   }

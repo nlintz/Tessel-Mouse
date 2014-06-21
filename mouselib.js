@@ -2,9 +2,6 @@ var $ = require('NodObjC')
 $.framework('Foundation')
 $.framework('CoreGraphics')
 
-// var pool = $.NSAutoreleasePool('alloc')('init');
-// pool('drain');
-
 /**
   There are two ways to access objc functions - c calls or objective c message passing
   
@@ -25,23 +22,27 @@ $.framework('CoreGraphics')
     Even args are the labels, odd args are the actual arguments
 
 **/
+function Mouse () {}
 
-
-function moveMouseToPosition (X, Y) {
+Mouse.prototype.move = function (X, Y) {
   var mouse = $.CGEventCreateMouseEvent(null, $.kCGEventMouseMoved, $.CGPointMake( X, Y), 0);
   $.CGEventPost($.kCGHIDEventTap, mouse);
 }
 
-function getMouseLocation () {
+Mouse.prototype.location = function () {
   var mouseEvent = $.CGEventCreate(null);
   var point = $.CGEventGetLocation(mouseEvent);
   return point;
+};
+
+Mouse.prototype.mousePress = function (direction) {
+  var location = this.location()
+  if (direction == "press") {
+    var mouseEv = $.CGEventCreateMouseEvent(null, $.kCGEventLeftMouseDown, location, $.kCGMouseButtonLeft);
+  } else if (direction == "release") {
+    var mouseEv = $.CGEventCreateMouseEvent(null, $.kCGEventLeftMouseUp, location, $.kCGMouseButtonLeft);
+  }
+  $.CGEventPost($.kCGHIDEventTap, mouseEv);
 }
-
-function Mouse () {}
-
-Mouse.prototype.move = moveMouseToPosition;
-
-Mouse.prototype.location = getMouseLocation;
 
 module.exports = new Mouse();
