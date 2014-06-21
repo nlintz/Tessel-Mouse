@@ -2,39 +2,13 @@ var tessel = require('tessel');
 var mouse = require('./mouselib');
 var mouseHandler = new MouseHandler()
 
-tessel.findTessel(null, function (err, client) {
-    client.listen(true, [10, 11, 12, 13, 20, 21, 22])
-    if (err) {
-      console.error('No tessel connected, aborting:', err);
-      process.exit(1);
-    }
-    
-    client.on('error', function (err) {
-      console.error('Error: Cannot connect to Tessel locally.', err);
-    });
+var spawn = require('child_process').spawn;
+var cmd = spawn('/usr/local/bin/tessel', ['run', './data_source/index.js'], console.log);
 
-    client.stdout.on('data', function (data) {
-      console.log("DATA")
-      mouseHandler.parseData(data);
-    });
-
-    // Bundle and upload code.
-    client.run('./data_source/index.js', ['tessel', ''], {
-    }, function (err, bundle) {
-      console.log('Mouse ... ON!')
-      // When this script ends, stop the client.
-      process.on('SIGINT', function() {
-        client.once('script-stop', function (code) {
-          process.exit(code);
-        });
-        setTimeout(function () {
-          // timeout :|
-          process.exit(code);
-        }, 5000);
-        client.stop();
-      });
-    });
+cmd.stdout.on('data', function(data) {
+  console.log(data.toString());
 });
+
 
 function MouseHandler () {
   this.previousXAcc = 0;
