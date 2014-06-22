@@ -4,7 +4,6 @@ var cmd = spawn('/usr/local/bin/tessel', ['run', './data_source/index.js'], {std
 var objcLib = require('./objcLib');
 var util = require("util");
 var events = require("events");
-var $ = require('NodObjC')
 
 var mouse = objcLib.Mouse;
 var screen = objcLib.Screen;
@@ -39,14 +38,27 @@ function MouseHandler () {
 
 };
 
-// var date = new Date();
-// var startTime = date.getTime();
+// --- INITIALIZER MESSAGES FOR FUN :D
+MouseHandler.prototype.runInitializerMessage = function () {
+  var messages = ['Running Tests', 
+    'Tests Pass',
+    'Building Dependencies',
+    'Dependencies Built',
+    'Dependencies Sturdy',
+    'Initiating Hydrogen Protocol']
 
-function runInitializerMessage () {
+    var i = 0;
+    console.log('Starting Tessel Mouse');
+    this.initializerMessageTimer = setInterval(function () {
+      console.log(messages[i]);
+      i = Math.min(i+1, messages.length-1)
+    }, 2000);
 }
 
-MouseHandler.prototype.update = function () {
+mouseHandler.runInitializerMessage();
+// ---
 
+MouseHandler.prototype.update = function () {
   this.xPosition += this.xVelocity;
   this.yPosition += this.yVelocity;
   mouse.move(this.xPosition, this.yPosition);
@@ -80,7 +92,12 @@ MouseHandler.prototype._parseMessage = function (message) {
     var args = message.args;
   }
 
-  this._handler(type)(args);
+  var handler = this._handler(type);
+  if (handler == undefined) {
+    console.log(new Error("Message " + type + " not implemented. Please implement the message in MouseHandler.prototype._handler"));
+  } else {
+    handler(args);
+  }
 };
 
 // From http://www.control.com/thread/1026171199
@@ -112,13 +129,19 @@ MouseHandler.prototype._handleAccelerometer = function (args) {
   var xRaw = parseFloat(data[0].toFixed(2));
   var yRaw = parseFloat(data[1].toFixed(2));
 
-  this.xVelocity = checkBounds(this.xPosition, this._getVelocity(xRaw, "x", velocityScalar), this.xBounds);
-  this.yVelocity = checkBounds(this.yPosition, this._getVelocity(yRaw, "y", velocityScalar), this.yBounds);
+  this.xVelocity = checkVelocity(this.xPosition, this._getVelocity(xRaw, "x", velocityScalar), this.xBounds);
+  this.yVelocity = checkVelocity(this.yPosition, this._getVelocity(yRaw, "y", velocityScalar), this.yBounds);
 };
 
 MouseHandler.prototype._getVelocity = function (reading, dataTag, velocityScalar) {
-  
+
   var filteredData = this._lowPass(reading, 'prevReading' + dataTag);
+
+  // Small Values are thrown out b/c they're within device tolerances
+  if (Math.abs(filteredData) < .03) {
+    filteredData = 0;
+  }
+
   var velocity = filteredData.map(-1, 1, -1 * velocityScalar, velocityScalar);
   return velocity;
 }
@@ -138,19 +161,19 @@ MouseHandler.prototype._handleError = function (args) {
 };
 
 MouseHandler.prototype._handleReady = function (args) {
-  var readyTime = new Date();
-  // console.log("Loading Time:", (readyTime - startTime)/60);
-  console.log("Reactors ... On");
-  console.log(this.update)
+  var date = new Date();
+  var readyTime = date.getTime();
+  clearTimeout(this.initializerMessageTimer);
+  console.log("\nReactors... ON");
   setInterval(function () {
     this.update()
   }.bind(this), 16); // Set updates to ~60 fps
 };
 
-function checkBounds(position, velocity, bounds) {
-  if (((position + velocity) > (bounds) && velocity > 0) || ((position + velocity) < 0 && velocity < 0)) {
+function checkVelocity(position, velocity, bounds) {
+  if (((position + velocity) > bounds && velocity > 0) || ((position + velocity) < 0 && velocity < 0)) {
     return 0;
   } else {
     return velocity;
   }
-}
+};

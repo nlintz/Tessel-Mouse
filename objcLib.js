@@ -2,6 +2,8 @@ var $ = require('NodObjC')
 $.framework('Foundation')
 $.framework('CoreGraphics')
 $.framework('AppKit')
+$.framework('ApplicationServices')
+var pool = $.NSAutoreleasePool('alloc')('init')
 /**
   There are two ways to access objc functions - c calls or objective c message passing
   
@@ -27,8 +29,8 @@ function Mouse () {};
 function Screen () {};
 
 Mouse.prototype.move = function (X, Y) {
-  var mouse = $.CGEventCreateMouseEvent(null, $.kCGEventMouseMoved, $.CGPointMake( X, Y), 0);
-  $.CGEventPost($.kCGHIDEventTap, mouse);
+  var moveEvent = $.CGEventCreateMouseEvent(null, $.kCGEventMouseMoved, $.CGPointMake(X, Y), 0);
+  $.CGEventPost($.kCGHIDEventTap, moveEvent);
 }
 
 Mouse.prototype.location = function () {
