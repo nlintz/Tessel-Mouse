@@ -25,10 +25,8 @@ function MouseHandler () {
   this.xBounds = screenDimensions.width;
   this.yBounds = screenDimensions.height;
 
-  this.xPosition = 0;
-  this.yPosition = 0;
-  this.xVelocity = 0;
-  this.yVelocity = 0;
+  this.xPosition = this.xBounds / 2;
+  this.yPosition = this.yBounds / 2;
 };
 
 MouseHandler.prototype._handler = function (type) {
@@ -80,8 +78,11 @@ MouseHandler.prototype._lowPass = function (value, attr) {
   return avg;
 };
 
+// TODO Refactor
 MouseHandler.prototype._handleAccelerometer = function (args) {
   var data = args.data;
+  var positionScalar = 5;
+
   var xRaw = parseFloat(data[0].toFixed(2));
   var yRaw = parseFloat(data[1].toFixed(2));
 
@@ -89,14 +90,26 @@ MouseHandler.prototype._handleAccelerometer = function (args) {
   var yFiltered = this._lowPass(yRaw, "prevYReadings");
 
   // Convert Accelerometer Readings to a Velocity
-  var xVelocity = xFiltered.map(-1, 1, 0, 5);
-  var yVelocity = yFiltered.map(-1, 1, 0, 5);
+  var xVelocity = xFiltered.map(-1, 1, positionScalar,  -1 * positionScalar);
+  var yVelocity = yFiltered.map(-1, 1, positionScalar, -1 * positionScalar);
 
   // var xPos = xFiltered.map(-1, 1, 0, this.screenWidth);
   // var yPos = yFiltered.map(-1, 1, 0, this.screenHeight);
+  this.xPosition += xVelocity;
+  this.yPosition += yVelocity;
 
-  mouse.move(xPos, yPos);
+  console.log(this.xPosition, this.yPosition);
+
+
+  this.xPosition = checkBounds(this.xPosition, this.xBounds);
+  this.yPos = checkBounds(this.yPosition, this.yBounds);
+
+  mouse.move(this.xPosition, this.yPosition);
 };
+
+MouseHandler.prototype._controlPosition = function (reading) {
+  var positionScalar = 5;
+}
 
 MouseHandler.prototype._handleMouseEvent = function (args) {
 
@@ -110,3 +123,13 @@ MouseHandler.prototype._handleMouseEvent = function (args) {
 MouseHandler.prototype._handleError = function (args) {
   console.log("Error parsing:", args.message)
 };
+
+function checkBounds(position, bounds) {
+  if (position > bounds) {
+    return bounds;
+  } else if (position < 0) {
+    return 0;
+  } else {
+    return position;
+  }
+}
