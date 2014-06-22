@@ -78,38 +78,23 @@ MouseHandler.prototype._lowPass = function (value, attr) {
   return avg;
 };
 
-// TODO Refactor
 MouseHandler.prototype._handleAccelerometer = function (args) {
   var data = args.data;
-  // var positionScalar = 5;
+  var positionScalar = 50;
 
   var xRaw = parseFloat(data[0].toFixed(2));
   var yRaw = parseFloat(data[1].toFixed(2));
 
-  // var xFiltered = this._lowPass(xRaw, "prevXReadings");
-  // var yFiltered = this._lowPass(yRaw, "prevYReadings");
-
-  // // Convert Accelerometer Readings to a Velocity
-  // var xVelocity = xFiltered.map(-1, 1, positionScalar,  -1 * positionScalar);
-  // var yVelocity = yFiltered.map(-1, 1, positionScalar, -1 * positionScalar);
-
-  // this.xPosition += xVelocity;
-  // this.yPosition += yVelocity;
-
-  // this.xPosition = checkBounds(this.xPosition, this.xBounds);
-  // this.yPos = checkBounds(this.yPosition, this.yBounds);
-  this.xPosition = checkBounds(this._getVelocity(xRaw, this.xPosition, "x"), this.xBounds);
-  this.yPosition = checkBounds(this._getVelocity(yRaw, this.yPosition, "y"), this.yBounds);
+  this.xPosition += checkBounds(this.xPosition, this._getVelocity(xRaw, "x", positionScalar), this.xBounds);
+  this.yPosition += checkBounds(this.yPosition, this._getVelocity(yRaw, "y", positionScalar), this.yBounds);
 
   mouse.move(this.xPosition, this.yPosition);
 };
 
-MouseHandler.prototype._getVelocity = function (reading, position, dataTag) {
-  var positionScalar = 5;
+MouseHandler.prototype._getVelocity = function (reading, dataTag, positionScalar) {
+  
   var filteredData = this._lowPass(reading, 'prevReading' + dataTag);
-  var velocity = filteredData.map(-1, 1, positionScalar, -1 * positionScalar);
-  // var position += velocity;
-  // position = checkBounds(position, bounds);
+  var velocity = filteredData.map(-1, 1, -1 * positionScalar, positionScalar);
   return velocity;
 
 }
@@ -127,12 +112,11 @@ MouseHandler.prototype._handleError = function (args) {
   console.log("Error parsing:", args.message)
 };
 
-function checkBounds(position, bounds) {
-  if (position > bounds) {
-    return bounds;
-  } else if (position < 0) {
+function checkBounds(position, velocity, bounds) {
+  if (((position + velocity) > bounds && velocity > 0) || ((position + velocity) < 0 && velocity < 0)) {
+    console.log('bounds reached')
     return 0;
   } else {
-    return position;
+    return velocity;
   }
 }
