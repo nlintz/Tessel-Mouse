@@ -22,8 +22,13 @@ Array.prototype.zeros = function () {
 
 function MouseHandler () {
   var screenDimensions = screen.windowSize();
-  this.screenWidth = screenDimensions.width;
-  this.screenHeight = screenDimensions.height;
+  this.xBounds = screenDimensions.width;
+  this.yBounds = screenDimensions.height;
+
+  this.xPosition = 0;
+  this.yPosition = 0;
+  this.xVelocity = 0;
+  this.yVelocity = 0;
 };
 
 MouseHandler.prototype._handler = function (type) {
@@ -80,8 +85,16 @@ MouseHandler.prototype._handleAccelerometer = function (args) {
   var xRaw = parseFloat(data[0].toFixed(2));
   var yRaw = parseFloat(data[1].toFixed(2));
 
-  var xPos = this._lowPass(xRaw, "prevXReadings").map(-1, 1, 0, this.screenWidth);
-  var yPos = this._lowPass(yRaw, "prevYReadings").map(-1, 1, 0, this.screenHeight);
+  var xFiltered = this._lowPass(xRaw, "prevXReadings");
+  var yFiltered = this._lowPass(yRaw, "prevYReadings");
+
+  // Convert Accelerometer Readings to a Velocity
+  var xVelocity = xFiltered.map(-1, 1, 0, 5);
+  var yVelocity = yFiltered.map(-1, 1, 0, 5);
+
+  // var xPos = xFiltered.map(-1, 1, 0, this.screenWidth);
+  // var yPos = yFiltered.map(-1, 1, 0, this.screenHeight);
+
   mouse.move(xPos, yPos);
 };
 
