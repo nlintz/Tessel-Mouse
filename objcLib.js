@@ -22,6 +22,7 @@ $.framework('AppKit')
     Even args are the labels, odd args are the actual arguments
 
 **/
+
 function Mouse () {};
 function Screen () {};
 
