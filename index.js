@@ -61,6 +61,10 @@ mouseHandler.runInitializerMessage();
 MouseHandler.prototype.update = function () {
   this.xPosition += this.xVelocity;
   this.yPosition += this.yVelocity;
+
+  this.xPosition = checkPosition(this.xPosition, this.xBounds);
+  this.yPosition = checkPosition(this.yPosition, this.yBounds);
+
   mouse.move(this.xPosition, this.yPosition);
 }
 
@@ -177,3 +181,13 @@ function checkVelocity(position, velocity, bounds) {
     return velocity;
   }
 };
+
+function checkPosition(position, bounds) {
+  if (position > bounds) {
+    return bounds - 5;
+  } else if (position < 0) {
+    return 0;
+  } else {
+    return position;
+  }
+}

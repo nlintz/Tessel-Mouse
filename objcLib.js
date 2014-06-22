@@ -1,9 +1,7 @@
 var $ = require('NodObjC')
-$.framework('Foundation')
-$.framework('CoreGraphics')
-$.framework('AppKit')
-$.framework('ApplicationServices')
-var pool = $.NSAutoreleasePool('alloc')('init')
+$.framework('Cocoa');
+
+// var pool = $.NSAutoreleasePool('alloc')('init')
 /**
   There are two ways to access objc functions - c calls or objective c message passing
   
