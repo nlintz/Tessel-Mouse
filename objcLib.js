@@ -1,7 +1,7 @@
 var $ = require('NodObjC')
 $.framework('Foundation')
 $.framework('CoreGraphics')
-
+$.framework('AppKit')
 /**
   There are two ways to access objc functions - c calls or objective c message passing
   
@@ -22,7 +22,8 @@ $.framework('CoreGraphics')
     Even args are the labels, odd args are the actual arguments
 
 **/
-function Mouse () {}
+function Mouse () {};
+function Screen () {};
 
 Mouse.prototype.move = function (X, Y) {
   var mouse = $.CGEventCreateMouseEvent(null, $.kCGEventMouseMoved, $.CGPointMake( X, Y), 0);
@@ -35,14 +36,22 @@ Mouse.prototype.location = function () {
   return point;
 };
 
-Mouse.prototype.mousePress = function (direction) {
+Mouse.prototype.press = function (pressType) {
   var location = this.location()
-  if (direction == "press") {
+  if (pressType == "press") {
     var mouseEv = $.CGEventCreateMouseEvent(null, $.kCGEventLeftMouseDown, location, $.kCGMouseButtonLeft);
-  } else if (direction == "release") {
+  } else if (pressType == "release") {
     var mouseEv = $.CGEventCreateMouseEvent(null, $.kCGEventLeftMouseUp, location, $.kCGMouseButtonLeft);
   }
   $.CGEventPost($.kCGHIDEventTap, mouseEv);
 }
 
-module.exports = new Mouse();
+Screen.prototype.windowSize = function () {
+  var id = $.CGMainDisplayID();
+  var width = $.CGDisplayPixelsWide(id)
+  var height = $.CGDisplayPixelsHigh(id)
+  return {width:width, height:height};
+}
+
+exports.Mouse = new Mouse();
+exports.Screen = new Screen();

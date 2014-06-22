@@ -5,7 +5,7 @@ process.stdout.write('process started')
 // Initialize the accelerometer.
 accel.on('ready', function () {
     accel.enableDataInterrupts(false, function () {
-      accel.setOutputRate(200, function rateSet() {
+      accel.setOutputRate(800, function rateSet() {
         accel.on('data', function (xyz) {
           sendMessage(DataTypes.accelerometer, {data: xyz})
         });
@@ -19,17 +19,16 @@ accel.on('error', function(err){
 });
 
 tessel.button.on('press', function(time) {
-  sendMessage(DataTypes.press);
+  sendMessage(DataTypes.mouseEvent, 'press');
 });
 
 tessel.button.on('release', function(time) {
-    sendMessage(DataTypes.release);
+    sendMessage(DataTypes.mouseEvent, 'release');
 });
 
 // Sends message to stdout
 function sendMessage (type, args) {
   console.log(Message(type, args));
-  // process.stdout.write(Message(type, args))
 }
 
 
@@ -43,6 +42,5 @@ function Message (type, args) {
 
 var DataTypes = {
   accelerometer: 'accelerometer',
-  press: 'press',
-  release: 'release'
+  mouseEvent: 'mouseEvent'
 };
