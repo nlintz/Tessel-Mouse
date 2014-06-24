@@ -1,5 +1,5 @@
-var $ = require('NodObjC')
-$.framework('Cocoa');
+// var $ = require('NodObjC')
+// $.framework('Cocoa');
 
 // var pool = $.NSAutoreleasePool('alloc')('init')
 /**
@@ -23,34 +23,26 @@ $.framework('Cocoa');
 
 **/
 
+var objcLib = require('./obj-clib/')
+
 function Mouse () {};
 function Screen () {};
 
 Mouse.prototype.move = function (X, Y) {
-  var moveEvent = $.CGEventCreateMouseEvent(null, $.kCGEventMouseMoved, $.CGPointMake(X, Y), 0);
-  $.CGEventPost($.kCGHIDEventTap, moveEvent);
+  objcLib.moveMouse(parseInt(X, 10), parseInt(Y, 10));
 }
 
-Mouse.prototype.location = function () {
-  var mouseEvent = $.CGEventCreate(null);
-  var point = $.CGEventGetLocation(mouseEvent);
-  return point;
-};
-
 Mouse.prototype.press = function (pressType) {
-  var location = this.location()
   if (pressType == "press") {
-    var mouseEv = $.CGEventCreateMouseEvent(null, $.kCGEventLeftMouseDown, location, $.kCGMouseButtonLeft);
+    objcLib.mousePress();
   } else if (pressType == "release") {
-    var mouseEv = $.CGEventCreateMouseEvent(null, $.kCGEventLeftMouseUp, location, $.kCGMouseButtonLeft);
+    objcLib.mouseRelease();
   }
-  $.CGEventPost($.kCGHIDEventTap, mouseEv);
 }
 
 Screen.prototype.windowSize = function () {
-  var id = $.CGMainDisplayID();
-  var width = $.CGDisplayPixelsWide(id)
-  var height = $.CGDisplayPixelsHigh(id)
+  var width = objcLib.windowWidth();
+  var height = objcLib.windowHeight();
   return {width:width, height:height};
 }
 

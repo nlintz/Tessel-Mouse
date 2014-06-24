@@ -1,12 +1,12 @@
 var spawn = require('child_process').spawn;
 var tessel = require('tessel');
 var cmd = spawn('/usr/local/bin/tessel', ['run', './data_source/index.js'], {stdio:'pipe'});
-var objcLib = require('./objcLib');
+var objc = require('./objc-api');
 var util = require("util");
 var events = require("events");
 
-var mouse = objcLib.Mouse;
-var screen = objcLib.Screen;
+var mouse = objc.Mouse;
+var screen = objc.Screen;
 
 var mouseHandler = new MouseHandler();
 

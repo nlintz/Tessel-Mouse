@@ -1,7 +1,7 @@
 {
-  "name": "TesselMouseOSX",
+  "name": "obj-clib",
   "version": "0.0.0",
-  "description": "Control Your Mouse Using the Tessel!",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,9 +9,6 @@
   "author": "Nathan Lintz",
   "license": "ISC",
   "dependencies": {
-    "NodObjC": "0.0.15",
-    "accel-mma84": "^0.2.3",
-    "ffi": "^1.2.6",
-    "tessel": "^0.3.5"
+    "ffi": "^1.2.6"
   }
 }
